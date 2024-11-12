@@ -5,6 +5,7 @@ import pathHandler from "./src/middlewares/pathHandler.mid.js"
 import errorHandler from "./src/middlewares/errorHandler.mid.js"
 import indexRouter from "./src/routers/index.router.js"
 import dbConnect from "./src/utils/dbConnect.js"
+import cookieParser from "cookie-parser"
 
 //server
 const server = express()
@@ -19,6 +20,7 @@ server.listen(port,ready)
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
 server.use(morgan("dev"))
+server.use(cookieParser(process.env.SECRET_KEY))
 
 //routers
 server.use(indexRouter)
