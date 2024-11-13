@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {create,read} from "../../data/mongo/managers/product.manager.js"
+import {create,read,update,destroy} from "../../data/mongo/managers/product.manager.js"
 
 const productsApiRouter = Router()
 
@@ -20,6 +20,29 @@ productsApiRouter.get ("/", async (req , res , next)=>{
         const response = await read()
         return res.status(200).json({response , message })
     }catch (error){
+        return next(error)
+    }
+})
+
+productsApiRouter.put("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const data = req.body
+        const message = "PRODUCT UPDATED"
+        const response = await update(id, data)
+        return res.status(200).json({ response, message })
+    } catch (error) {
+        return next(error)
+    }
+})
+
+productsApiRouter.delete("/:id", async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const message = "PRODUCT DELETED"
+        const response = await destroy(id)
+        return res.status(200).json({ response, message })
+    } catch (error) {
         return next(error)
     }
 })
