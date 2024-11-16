@@ -5,7 +5,7 @@ async function isUser(req, res, next) {
         const { email } = req.body
         const one = await readByEmail(email)
         if (one) {
-            const error = new Error("User already exists")
+            const error = new Error("EL USUARIO YA EXISTE")
             error.statusCode = 400
             throw error
         }
