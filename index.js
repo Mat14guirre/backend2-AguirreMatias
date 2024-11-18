@@ -1,13 +1,12 @@
 import express from "express"
 import "dotenv/config.js"
 import session from "express-session"
-// import sessionFileStore from "session-file-store"
 import MongoStore from "connect-mongo"
 import morgan from "morgan"
 import pathHandler from "./src/middlewares/pathHandler.mid.js"
 import errorHandler from "./src/middlewares/errorHandler.mid.js"
 import indexRouter from "./src/routers/index.router.js"
-import dbConnect from "./src/utils/dbConnect.js"
+import dbConnect from "./src/utils/dbConnect.util.js"
 import cookieParser from "cookie-parser"
 
 //server
@@ -26,13 +25,6 @@ server.use(morgan("dev"))
 //configuracion de cookies
 server.use(cookieParser(process.env.SECRET_KEY))
 
-//configuracion de session con memory
-// server.use(session({secret: "process.env.SECRET_KEY",resave: true,saveUninitialized: true,cookie: {maxAge:60000}}))
-
-//configuracion de session con file storage
-// const FileStore= sessionFileStore(session)server.use(session({secret:process.env.SECRET_KEY,resave:true,saveUninitialized:true,store: new FileStore ( {path: "./src/data/fs/sessions", ttl: 10,retries:2 } )}))
-
-//configuracion de session con mongo storage
 server.use(session({
     secret:process.env.SECRET_KEY,
     resave:true,
