@@ -13,6 +13,7 @@ selector.addEventListener("click", async (event)=>{
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         };
+        
         let response = await fetch("/api/sessions/register", options) 
         response = await response.json()
         alert(response.message)

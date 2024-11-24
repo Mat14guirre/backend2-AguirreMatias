@@ -12,9 +12,15 @@ selector.addEventListener("click", async (event)=>{
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data),
         };
+        
         let response = await fetch("/api/sessions/login", options) 
         response = await response.json()
-        alert(response.message)
+        if (response.token) {
+            localStorage.setItem("token", response.token)
+            location.replace("/")
+        } else {
+            alert("INVALID CREDENTIALS")
+        }
     } catch (error) {
         alert(error.message)
     }
