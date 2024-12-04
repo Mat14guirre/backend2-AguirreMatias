@@ -19,7 +19,7 @@ selector.addEventListener("click", async (event)=>{
             localStorage.setItem("token", response.token)
             location.replace("/")
         } else {
-            alert("INVALID CREDENTIALS")
+            alert("CREDENCIAL INVALIDA")
         }
     } catch (error) {
         alert(error.message)

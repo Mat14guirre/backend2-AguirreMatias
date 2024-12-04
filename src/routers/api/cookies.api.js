@@ -1,64 +1,31 @@
-import { Router } from "express";
+import CustomRouter from "../../utils/CustomRouter.util.js";
+import { fork } from "child_process";
+import sum from "../../utils/process.util.js";
+import cartsApiRouter from "./carts.api.js";
+import productsApiRouter from "./products.api.js";
+import sessionsApiRouter from "./sessions.api.js";
+import usersApiRouter from "./users.api.js";
 
-const cookiesRouter = Router()
+class ApiRouter extends CustomRouter {
+  constructor() {
+    super();
+    this.init();
+  }
+  init = () => {
+    this.use("/users", ["PUBLIC"], usersApiRouter);
+    this.use("/products", ["PUBLIC"], productsApiRouter);
+    this.use("/carts", ["PUBLIC"], cartsApiRouter);
+    this.use("/sessions", ["PUBLIC"], sessionsApiRouter);
+    this.read("/sum", ["PUBLIC"], (req, res) => {
+      const child = fork("./src/utils/process.util.js");
+      child.send("start");
+      child.on("message", (response) => {
+        const message = "SUMATORIA OBTENIDA";
+        return res.json200(response, message);
+      });
+    });
+  };
+}
 
-cookiesRouter.get("/create", (req,res,next) =>{
-    try {
-        const message = "COOKIE SETEADA"
-        return res
-        .status(201)
-        .cookie("modo","oscuro")
-        .cookie("rolDeUsuario","admin",{maxAge:5000})
-        .json({message})
-    }catch{
-        return next (error)
-    }
-})
-
-cookiesRouter.get("/read", (req,res,next) =>{
-    try {
-       const cookies= req.cookies
-       console.log(cookies);
-       console.log(cookies["modo"]);
-       console.log(cookies.modo);
-       const message = "COOKIE LEIDA"
-       return res.status(200).json({message})
-    }catch(error){
-        return next (error)
-    }
-})
-
-cookiesRouter.get("/destroy/:cookieAborrar", (req,res,next) =>{
-    try {
-        const {cookieAborrar} = req.params
-        const message = "COOKIE ELIMINADA"
-        return res
-            .status(200)
-            .clearCookie(cookieAborrar)
-            .json({message})
-    }catch{
-        return next (error)
-    }
-})
-
-cookiesRouter.get("/signed", (req ,res , next)=>{
-    try{
-        const message = "COOKIE FIRMADA CREADA"
-        return res.status (201).cookie("nombre","Mati A", {signed:true}).json ({message})
-    }catch (error){
-        return next(error)
-    }
-})
-
-cookiesRouter.get("/read-signed", (req ,res , next)=>{
-    try{
-        const cookies = req.cookies
-        const signedCookies= req.signedCookies
-        return res.status(200).json({cookies, signedCookies})
-    }catch (error){
-        return next(error)
-    }
-})
-
-
-export default cookiesRouter
+const apiRouter = new ApiRouter();
+export default apiRouter.getRouter();

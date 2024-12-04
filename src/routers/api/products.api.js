@@ -1,50 +1,60 @@
-import { Router } from "express";
-import {create,read,update,destroy} from "../../data/mongo/managers/product.manager.js"
+import CustomRouter from "../../utils/CustomRouter.util.js";
+import {
+  create,
+  read,
+  update,
+  destroy,
+} from "../../data/mongo/managers/product.manager.js";
+import passportCb from "../../middlewares/passportCb.mid.js";
+import verifyToken from "../../middlewares/verifyToken.mid.js";
+import isAdmin from "../../middlewares/isAdmin.mid.js";
 
-const productsApiRouter = Router()
+class ProductsApiRouter extends CustomRouter {
+  constructor() {
+    super();
+    this.init();
+  }
+  init = () => {
+    this.create("/", ["ADMIN"], verifyToken, isAdmin, createProduct);
+    this.read("/", ["PUBLIC"], readProducts);
+    this.update("/:id", ["ADMIN"], passportCb("admin"), updateProduct);
+    this.destroy("/:id", ["ADMIN"], passportCb("admin"), destroyProduct);
+  };
+}
 
-productsApiRouter.post("/", async ( req,res,next)=>{
-    try{
-        const message = "PRODUCT CREATED"
-        const data = req.body
-        const response = await create(data)
-        return res.status(201).json({response, message})
-    }catch (error){
-        return next(error)
-    }
-})
+const productsApiRouter = new ProductsApiRouter();
+export default productsApiRouter.getRouter();
 
-productsApiRouter.get ("/", async (req , res , next)=>{
-    try{
-        const message = "PRODUCTS FOUND"
-        const response = await read()
-        return res.status(200).json({response , message })
-    }catch (error){
-        return next(error)
-    }
-})
-
-productsApiRouter.put("/:id", async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const data = req.body
-        const message = "PRODUCT UPDATED"
-        const response = await update(id, data)
-        return res.status(200).json({ response, message })
-    } catch (error) {
-        return next(error)
-    }
-})
-
-productsApiRouter.delete("/:id", async (req, res, next) => {
-    try {
-        const { id } = req.params
-        const message = "PRODUCT DELETED"
-        const response = await destroy(id)
-        return res.status(200).json({ response, message })
-    } catch (error) {
-        return next(error)
-    }
-})
-
-export default productsApiRouter
+async function createProduct(req, res) {
+  const message = "PRODUCTO CREADO";
+  const data = req.body;
+  const response = await create(data);
+  return res.json201(response, message);
+}
+async function readProducts(req, res) {
+  const message = "PRODUCTOS DISPONIBLES";
+  const response = await read();
+  if (response.length > 0) {
+    return res.json200(response, message);
+  }
+  return res.json404();
+}
+async function updateProduct(req, res) {
+  const { id } = req.params;
+  const data = req.body;
+  const message = "PRODUCTO ACTUALIZADO";
+  const response = await update(id, data);
+  if (response) {
+    return res.json200(response, message);
+  }
+  return res.json404();
+}
+async function destroyProduct(req, res) {
+  const { id } = req.params;
+  const message = "PRODUCTO BORRADO";
+  const response = await destroy(id);
+  if (response) {
+    return res.json200(response, message);
+  }
+  return res.json404();
+}
