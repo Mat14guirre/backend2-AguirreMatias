@@ -17,9 +17,7 @@ class ApiRouter extends CustomRouter {
     this.use("/carts", ["PUBLIC"], cartsApiRouter);
     this.use("/sessions", ["PUBLIC"], sessionsApiRouter);
     this.read("/sum", ["PUBLIC"], (req, res) => {
-      //const response = sum();
-      //const message = "SUMATORIA OBTENIDA";
-      //return res.json200(response, message);
+      
       const child = fork("./src/utils/process.util.js");
       child.send("start");
       child.on("message", (response) => {
