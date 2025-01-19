@@ -4,7 +4,6 @@ import argsUtil from "../utils/args.util.js";
 
 const { persistence } = argsUtil;
 
-
 let dao = {};
 
 switch (persistence) {
@@ -46,7 +45,7 @@ switch (persistence) {
     dbConnect();
     
     const { default: ProductsManagerMongo } = await import(
-      "./mongo/managers/products.manager.js"
+      "./mongo/managers/product.manager.js"
     );
     const { default: UsersManagerMongo } = await import(
       "./mongo/managers/users.manager.js"

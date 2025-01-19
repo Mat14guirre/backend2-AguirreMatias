@@ -8,9 +8,7 @@ import {
   async function createProduct(req, res) {
     const message = "PRODUCT CREATED";
     const data = req.body;
-    //el servicio ahora contiene la logica de gestion
-    //en el controlador el resto de las lineas
-    //deberian ser SOLO de logica de negocio (req/res)
+   
     const response = await createService(data);
     return res.json201(response, message);
   }
