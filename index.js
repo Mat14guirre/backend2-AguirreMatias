@@ -8,6 +8,7 @@ import errorHandler from "./src/middlewares/errorHandler.mid.js"
 import indexRouter from "./src/routers/index.router.js"
 import dbConnect from "./src/utils/dbConnect.util.js"
 import cookieParser from "cookie-parser"
+import cors from "cors"
 
 
 //server
@@ -32,6 +33,11 @@ server.use(session({
     resave:true,
     saveUninitialized:true,
     store: new MongoStore ({mongoUrl: process.env.MONGO_LINK, ttl:60*60*24})
+}))
+
+server.use(cors({
+    origin: true ,
+    credentials: true
 }))
 
 
