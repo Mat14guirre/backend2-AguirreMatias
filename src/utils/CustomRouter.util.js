@@ -1,6 +1,7 @@
 import { Router } from "express";
 import argsUtil from "./args.util.js";
 
+
 class CustomRouter {
   constructor() {
     this._router = Router();
@@ -30,7 +31,7 @@ class CustomRouter {
       if (policies.includes("PUBLIC")) return next();
       const token = req?.cookies?.token;
       if (!token) return res.json401();
-      const data = jwt.verify(token, argsUtil.SECRET);
+      const data = jwt.verify(token, argsUtil.SECRET_KEY);
       const { role, user_id } = data;
       if (!role || !user_id) return res.json401();
       if (

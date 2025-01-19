@@ -44,19 +44,15 @@ passport.use(
       try {
         const user = await UsersManager.readByEmail(email);
         if (!user) {
-          // const error = new Error("USER NOT FOUND");
-          // error.statusCode = 401;
-          // return done(error);
+          
           const info = { message: "USER NOT FOUND", statusCode: 401 };
           return done(null, false, info);
         }
-        const passwordForm = password; /* req.body.password */
+        const passwordForm = password; 
         const passwordDb = user.password;
         const verify = verifyHashUtil(passwordForm, passwordDb);
         if (!verify) {
-          // const error = new Error("INVALID CREDENTIALS");
-          // error.statusCode = 401;
-          // return done(error);
+          
           const info = { message: "INVALID CREDENTIALS", statusCode: 401 };
           return done(null, false, info);
         }
@@ -88,9 +84,7 @@ passport.use(
         //console.log(data);
         const { user_id, role } = data;
         if (role !== "ADMIN") {
-          // const error = new Error("NOT AUTHORIZED")
-          // error.statusCode = 403
-          // return done(error)
+          
           const info = { message: "NOT AUTHORIZE", statusCode: 403 };
           return done(null, false, info);
         }
@@ -113,9 +107,7 @@ passport.use(
         const user = await UsersManager.readById(user_id);
         const { isOnline } = user;
         if (!isOnline) {
-          // const error = new Error("USER IS NOT ONLINE");
-          // error.statusCode = 401;
-          // return done(error);
+          
           const info = { message: "USER IS NOT ONLINE", statusCode: 401 };
           return done(null, false, info);
         }
@@ -137,7 +129,7 @@ passport.use(
       try {
         const { user_id } = data;
         await UsersManager.update(user_id, { isOnline: false });
-        // construiria un token que venza al instante
+        
         return done(null, { user_id: null });
       } catch (error) {
         return done(error);
